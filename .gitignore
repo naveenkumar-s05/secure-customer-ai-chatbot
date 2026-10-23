@@ -1,0 +1,30 @@
+# Python virtual environments
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Local Qdrant storage
+qdrant_data/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+
+# Test and tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local databases
+*.sqlite
+*.sqlite3
+*.db
