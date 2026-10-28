@@ -5,12 +5,12 @@ from pydantic import BaseModel, Field
 
 
 class OTPRequest(BaseModel):
-    mobile: str
+    mobile: str = Field(min_length=10, max_length=15)
 
 
 class OTPVerify(BaseModel):
-    mobile: str
-    otp: str = Field(min_length=6, max_length=6)
+    mobile: str = Field(min_length=10, max_length=15)
+    otp: str = Field(min_length=6, max_length=6, pattern=r"^\d{6}$")
 
 
 class TokenResponse(BaseModel):

@@ -241,9 +241,11 @@ def confirm_invoice(
     )
 
     if duplicate:
-        proposal.status = "rejected"
-        db.commit()
-
+        try:
+            proposal.status = "rejected"
+            db.commit()
+        except Exception:
+            db.rollback()
         raise HTTPException(
             status_code=409,
             detail="An invoice with this number already exists for your account.",
@@ -258,10 +260,9 @@ def confirm_invoice(
         payment_status=proposal.payment_status,
     )
 
-    db.add(invoice)
-    proposal.status = "confirmed"
-
     try:
+        db.add(invoice)
+        proposal.status = "confirmed"
         db.commit()
         db.refresh(invoice)
     except IntegrityError:
@@ -269,6 +270,12 @@ def confirm_invoice(
         raise HTTPException(
             status_code=409,
             detail="Invoice could not be created; check for a duplicate invoice number.",
+        )
+    except Exception:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail="Invoice could not be created due to a database error.",
         )
 
     # PostgreSQL is the source of truth. If indexing fails, the invoice
